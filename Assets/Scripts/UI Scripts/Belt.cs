@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Belt : MonoBehaviour {
 
@@ -77,5 +78,4 @@ public class Belt : MonoBehaviour {
             }
         }
     }
-
 }
