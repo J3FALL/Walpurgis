@@ -4,9 +4,9 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour {
 
     private static Text tileText;
-    private bool isInventoryHidden;
+    /*private bool isInventoryHidden;
     public GameObject inventory;
-    public Image inventoryBackground;
+    public Image inventoryBackground;*/
 
     public GameObject reactionPanel, currentReactionPanel = null;
 
@@ -21,7 +21,7 @@ public class UIManager : MonoBehaviour {
         EventAggregator.ToolUsed.Publish(name);
     }
 
-    public void ShowInventory()
+    /*public void ShowInventory()
     {
         
         if (isInventoryHidden)
@@ -38,17 +38,17 @@ public class UIManager : MonoBehaviour {
             inventory.SetActive(false);
             isInventoryHidden = true;
         }
-    }
+    }*/
 
     void Start () {
         tileText = GameObject.Find("TilesCounter").GetComponent<Text>();
 
-        inventory = GameObject.Find("Inventory");
+        /*inventory = GameObject.Find("Inventory");
         inventoryBackground = GameObject.Find("InventoryBackground").GetComponent<Image>();
         inventoryBackground.CrossFadeAlpha(0f, 0, false);
         inventory.GetComponent<CanvasGroup>().alpha = 0f;
         inventory.SetActive(false);
-        isInventoryHidden = true;
+        isInventoryHidden = true;*/
 
         EventAggregator.EnemyReacted.Subscribe(OnEnemyReacted);
         EventAggregator.EnemyLaunched.Subscribe(OnEnemyLaunched);
