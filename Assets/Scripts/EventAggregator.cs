@@ -14,6 +14,8 @@ public class EventAggregator : MonoBehaviour {
     public static LevelCompletedEvent LevelCompleted = new LevelCompletedEvent();
     public static AnimatedTextDisappearedEvent TextDisappeared = new AnimatedTextDisappearedEvent();
     public static InventoryFocusedEvent InventoryFocused = new InventoryFocusedEvent();
+    public static ChangeInputModeEvent ChangeInputMode = new ChangeInputModeEvent();
+
     void Awake()
     {
         EnemyDied = new EnemyDiedEvent();
@@ -29,5 +31,6 @@ public class EventAggregator : MonoBehaviour {
         LevelCompleted = new LevelCompletedEvent();
         TextDisappeared = new AnimatedTextDisappearedEvent();
         InventoryFocused = new InventoryFocusedEvent();
+        ChangeInputMode = new ChangeInputModeEvent();
     }
 }
