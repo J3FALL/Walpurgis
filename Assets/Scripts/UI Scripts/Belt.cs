@@ -23,6 +23,8 @@ public class Belt : MonoBehaviour {
 
         //Pass handler of "W" key to KeyInput
         keyInput.Handlers.Add(KeyCode.W, ShowBelt);
+
+        EventAggregator.ChangeInputMode.Subscribe(ChangeInputModeCallback);
 	}
 	
 
@@ -76,6 +78,14 @@ public class Belt : MonoBehaviour {
                 backTransition = true;
 
             }
+        }
+    }
+
+    void ChangeInputModeCallback(bool mode)
+    {
+        if (mode)
+        {
+            ShowBelt();
         }
     }
 }

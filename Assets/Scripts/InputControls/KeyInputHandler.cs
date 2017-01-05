@@ -7,39 +7,57 @@ public class KeyInputHandler : MonoBehaviour {
     public SortedDictionary<KeyCode, Action> Handlers = new SortedDictionary<KeyCode, Action>();
 
     private Action action;
+    private bool isActive;
 
     void Start()
     {
+        isActive = true;
+        EventAggregator.ChangeInputMode.Subscribe(ChangeInputModeCallback);
         //Handlers.Add(KeyCode.Q, Test);
     }
 	void Update () {
-	    if (Input.GetKeyUp(KeyCode.Q))
+        if (isActive)
         {
-            Handlers.TryGetValue(KeyCode.Q, out action);
-            if (action != null)
+            if (Input.GetKeyUp(KeyCode.Q))
             {
-                action();
+                Handlers.TryGetValue(KeyCode.Q, out action);
+                if (action != null)
+                {
+                    action();
+                }
             }
-        }
 
-        if (Input.GetKeyUp(KeyCode.W))
-        {
-            Handlers.TryGetValue(KeyCode.W, out action);
-            if (action != null)
+            if (Input.GetKeyUp(KeyCode.W))
             {
-                action();
+                Handlers.TryGetValue(KeyCode.W, out action);
+                if (action != null)
+                {
+                    action();
+                }
             }
-        }
 
-        if (Input.GetKeyUp(KeyCode.E))
-        {
-            Handlers.TryGetValue(KeyCode.E, out action);
-            if (action != null)
+            if (Input.GetKeyUp(KeyCode.E))
             {
-                action();
+                Handlers.TryGetValue(KeyCode.E, out action);
+                if (action != null)
+                {
+                    action();
+                }
             }
         }
+	    
 	}
 
-   
+   void ChangeInputModeCallback(bool mode)
+    {
+        //switch on/off key input for items when someone is already opened/closed 
+        if (mode)
+        {
+            isActive = true;
+            Debug.Log("!!");
+        } else
+        {
+            isActive = false;
+        }
+    }
 }

@@ -17,6 +17,7 @@ public class Chalk : MonoBehaviour
     public Camera myCamera;
     public Player player;
 
+    private float R = 5.0f;
 
     struct myLine
     {
@@ -45,19 +46,16 @@ public class Chalk : MonoBehaviour
 
     void Update()
     {
-
         if (state == State.StartDraw)
         {
             InitDrawMode();
             state = State.Draw;
-            Debug.Log("draw");
         } else if(state == State.Draw)
         {
             //check if player collides with line
             if (player.GetComponent<BoxCollider2D>().OverlapPoint(pos))
             {
                 state = State.StartDraw;
-                Debug.Log("start draw");
             } else
             {
                 //checking key inputs
@@ -87,12 +85,26 @@ public class Chalk : MonoBehaviour
                     if (isLineCollide())
                     {
                         line.SetColors(Color.red, Color.red);
-                        //success
-                        state = State.StartDraw;
+                        //check if player inside the field
+                        if (CheckSuccess())
+                        {
+                            Debug.Log("true");
+                            ClearPointsArray();
+                            state = State.Drag;
+                            //EventAggregator.ChangeInputMode.Publish(true);
+                        } else
+                        {
+                            Debug.Log("false");
+                            state = State.StartDraw;
+                        }
+                        
                     }
                 }
             }
             
+        } else if (state == State.Drag)
+        {
+  
         }
         //pos = myCamera.ScreenToWorldPoint(Input.mousePosition);
 
@@ -100,6 +112,8 @@ public class Chalk : MonoBehaviour
 
     private void InitDrawMode()
     {
+        //Send message to switch off key input listening
+        EventAggregator.ChangeInputMode.Publish(false);
         //Remove last lines
         pointsList = new List<Vector3>();
         line.SetColors(Color.white, Color.white);
@@ -116,7 +130,6 @@ public class Chalk : MonoBehaviour
         }
         else if (delta <= MAX_OFFSET)
         {
-            Debug.Log("finish drag");
             state = State.StartDraw;
             //enable draw mode
         }
@@ -168,5 +181,53 @@ public class Chalk : MonoBehaviour
             (Mathf.Max(L1.StartPoint.y, L1.EndPoint.y) >= Mathf.Min(L2.StartPoint.y, L2.EndPoint.y)) &&
             (Mathf.Max(L2.StartPoint.y, L2.EndPoint.y) >= Mathf.Min(L1.StartPoint.y, L1.EndPoint.y))
          );
+    }
+
+    private bool CheckSuccess()
+    {
+        bool result = true;
+
+        Vector3 first = pointsList[0];
+        Vector3 end = pointsList[pointsList.Count - 1];
+
+        Debug.Log(first.x + " " + first.y);
+        Debug.Log(end.x + " " + end.y);
+        //check if first point is closed with end point
+        if (Mathf.Pow((first.x - end.x), 2) + Mathf.Pow(first.y - end.y, 2) > Mathf.Pow(R, 2))
+        {
+            result = false;
+        } else
+        {
+            /*float width = player.GetComponent<Renderer>().bounds.size.x;
+            float heigth = player.GetComponent<Renderer>().bounds.size.y;
+
+            for (int i = 0; i < pointsList.Count; i++)
+            {
+                Vector3 point = pointsList[i];
+                //check if point inside of player box
+                if ((point.x >= player.transform.position.x - width / 2 && 
+                     point.x <= player.transform.position.x + width / 2 &&
+                     point.y <= player.transform.position.y - heigth /2 &&
+                     point.y <= player.transform.position.y + heigth / 2))
+                {
+                    result = false;
+                }
+            }*/
+        }
+
+        return result;
+    }
+
+    private void ClearPointsArray()
+    {
+        EventAggregator.ChangeInputMode.Publish(true);
+        pointsList = new List<Vector3>();
+        Debug.Log(pointsList.Count);
+        line.SetColors(Color.white, Color.white);
+        line.SetVertexCount(0);
+        pos = player.transform.position;
+        pos.y += 30.0f;
+
+        transform.position = new Vector3(defaultPos.x, transform.position.y);
     }
 }
