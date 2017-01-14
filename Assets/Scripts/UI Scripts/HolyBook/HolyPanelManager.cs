@@ -17,11 +17,18 @@ public class HolyPanelManager : MonoBehaviour {
     //speed of symbols falling pixels per frame
     private float fallSpeed = 1;
 
+    //maximum of fails of symbol catching
+    private int maxFails = 3;
+    private int failCounter;
     void Start () {
         //get symbols map
         KeyValuePair<List<float>, List<List<Symbol>>> kvp = generator.Generate();
         timeLine = kvp.Key;
         symbols = kvp.Value;
+
+        failCounter = 0;
+        //listen to symbol destroying and process score
+        EventAggregator.SymbolReached.Subscribe(OnSymbolReachedCallback);
 	}
 	
 	void Update () {
@@ -69,6 +76,21 @@ public class HolyPanelManager : MonoBehaviour {
         {
             instance.transform.position = new Vector2(activators[3].transform.position.x,
                                                       activators[3].transform.position.y + 500);
+        }
+    }
+    
+    void OnSymbolReachedCallback(bool result)
+    {
+        //increase fail counter if fali
+        if (!result)
+        {
+            failCounter++;
+
+            if (failCounter >= maxFails)
+            {
+                Debug.Log("!");
+                //restart ?
+            }
         }
     } 
 }

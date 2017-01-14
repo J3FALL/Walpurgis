@@ -15,6 +15,7 @@ public class EventAggregator : MonoBehaviour {
     public static AnimatedTextDisappearedEvent TextDisappeared = new AnimatedTextDisappearedEvent();
     public static InventoryFocusedEvent InventoryFocused = new InventoryFocusedEvent();
     public static ChangeInputModeEvent ChangeInputMode = new ChangeInputModeEvent();
+    public static SymbolReachedEvent SymbolReached = new SymbolReachedEvent();
 
     void Awake()
     {
@@ -32,5 +33,6 @@ public class EventAggregator : MonoBehaviour {
         TextDisappeared = new AnimatedTextDisappearedEvent();
         InventoryFocused = new InventoryFocusedEvent();
         ChangeInputMode = new ChangeInputModeEvent();
+        SymbolReached = new SymbolReachedEvent();
     }
 }

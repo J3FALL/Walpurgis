@@ -30,4 +30,16 @@ public class Activator : MonoBehaviour {
             }
         }
 	}
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        //check if symbol collides with activator
+        if (other.name.ToString().Contains("Symbol") && Input.GetKey(key))
+        {
+            //publish that success
+            EventAggregator.SymbolReached.Publish(true);
+            //Destroy symbol
+            Destroy(other.gameObject);
+        }
+    }
 }

@@ -43,7 +43,7 @@ public class Symbol : MonoBehaviour {
         if (isFall)
         {
             //falling
-            Debug.Log(speed);
+            //Debug.Log(speed);
             GetComponent<RectTransform>().transform.position = new Vector2(transform.position.x, transform.position.y - speed);
         }
     }

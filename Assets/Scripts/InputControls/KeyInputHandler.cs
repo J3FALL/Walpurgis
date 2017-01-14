@@ -54,7 +54,6 @@ public class KeyInputHandler : MonoBehaviour {
         if (mode)
         {
             isActive = true;
-            Debug.Log("!!");
         } else
         {
             isActive = false;
