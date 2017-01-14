@@ -10,6 +10,7 @@ public class Chalk : MonoBehaviour
     private float delta = 0.0f;
     private LineRenderer line;
     private bool isKeyPressed;
+    private bool isDragActive;
     private State state;
 
     public List<Vector3> pointsList;
@@ -31,6 +32,8 @@ public class Chalk : MonoBehaviour
     {
         state = State.Drag;
         defaultPos = transform.position;
+        isDragActive = true;
+        EventAggregator.ChangeInputMode.Subscribe(OnChangedModeCallback);
     }
 
     void Awake()
@@ -123,16 +126,19 @@ public class Chalk : MonoBehaviour
 
     public void OnDrag()
     {
-        delta = Input.mousePosition.x - defaultPos.x;
-        if (delta < 0 && delta > MAX_OFFSET)
+        if (isDragActive)
         {
-            transform.position = new Vector3(Input.mousePosition.x, transform.position.y, transform.position.z);
-        }
-        else if (delta <= MAX_OFFSET)
-        {
-            state = State.StartDraw;
-            //enable draw mode
-        }
+            delta = Input.mousePosition.x - defaultPos.x;
+            if (delta < 0 && delta > MAX_OFFSET)
+            {
+                transform.position = new Vector3(Input.mousePosition.x, transform.position.y, transform.position.z);
+            }
+            else if (delta <= MAX_OFFSET)
+            {
+                state = State.StartDraw;
+                //enable draw mode
+            }
+        }   
     }
 
     private bool isLineCollide()
@@ -230,4 +236,15 @@ public class Chalk : MonoBehaviour
 
         transform.position = new Vector3(defaultPos.x, transform.position.y);
     }
+
+    void OnChangedModeCallback(bool mode)
+    {
+        if (mode)
+        {
+            isDragActive = true;
+        } else
+        {
+            isDragActive = false;
+        }
+    } 
 }

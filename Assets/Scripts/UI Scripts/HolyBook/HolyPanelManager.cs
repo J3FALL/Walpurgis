@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class HolyPanelManager : MonoBehaviour {
 
     public HolyMapGenerator generator;
     public GameObject basicSymbol;
     public List<Activator> activators;
+    public Destroyer destroyer;
 
     //private SortedDictionary<float, List<Symbol>> symbolMap;
     private List<float> timeLine = new List<float>();
@@ -20,36 +22,64 @@ public class HolyPanelManager : MonoBehaviour {
     //maximum of fails of symbol catching
     private int maxFails = 3;
     private int failCounter;
+
+    private bool isActive;
+
     void Start () {
+        isActive = false;
+
+        //listen to symbol destroying and process score
+        EventAggregator.SymbolReached.Subscribe(OnSymbolReachedCallback);
+
+        Hide();
+        //Init();
+	}
+	
+    public void Init()
+    {
+        EventAggregator.ChangeInputMode.Publish(false);
+        idx = -1;
+        time = 0.0f;
         //get symbols map
         KeyValuePair<List<float>, List<List<Symbol>>> kvp = generator.Generate();
         timeLine = kvp.Key;
         symbols = kvp.Value;
 
         failCounter = 0;
-        //listen to symbol destroying and process score
-        EventAggregator.SymbolReached.Subscribe(OnSymbolReachedCallback);
-	}
-	
+
+        isActive = true;
+    }
+
 	void Update () {
-        //Debug.Log(time);
-        if (idx + 1 < timeLine.Count)
+        if (isActive)
         {
-            //time for spawn new symbols ?
-            if (timeLine[idx + 1] <= time)
+            if (idx + 1 < timeLine.Count)
             {
-                idx++;
-                //spawn symbols for current time
-                for (int i = 0; i < symbols[idx].Count; i++)
+                //time for spawn new symbols ?
+                if (timeLine[idx + 1] <= time)
                 {
-                    GameObject instance = (GameObject) Instantiate(basicSymbol, transform.position, Quaternion.identity);
-                    Config(instance, symbols[idx][i]);
-                    //start falling of symbol
-                    instance.GetComponent<Symbol>().StartFall(5);
+                    idx++;
+                    //spawn symbols for current time
+                    for (int i = 0; i < symbols[idx].Count; i++)
+                    {
+                        GameObject instance = (GameObject)Instantiate(basicSymbol, transform.position, Quaternion.identity);
+                        Config(instance, symbols[idx][i]);
+                        //start falling of symbol
+                        instance.GetComponent<Symbol>().StartFall(5);
+                    }
                 }
             }
+            time += Time.deltaTime;
+
+            //Hide panel when last symbol has finished
+            if (time > timeLine[timeLine.Count - 1] + 2.5f)
+            {
+                //finish
+                Hide();
+                EventAggregator.ChangeInputMode.Publish(true);
+                isActive = false;
+            }
         }
-        time += Time.deltaTime;
 	}
 
     private void Config(GameObject instance, Symbol symbol)
@@ -90,7 +120,28 @@ public class HolyPanelManager : MonoBehaviour {
             {
                 Debug.Log("!");
                 //restart ?
+                EventAggregator.ChangeInputMode.Publish(true);
             }
         }
+    }
+    
+    public void Show()
+    {
+        GetComponent<Image>().CrossFadeAlpha(1.0f, 0.0f, false);
+        for (int i = 0; i < activators.Count; i++)
+        {
+            activators[i].GetComponent<Image>().CrossFadeAlpha(1.0f, 0.0f, false);
+        }
+        destroyer.GetComponent<Image>().CrossFadeAlpha(1.0f, 0.0f, false);
     } 
+
+    public void Hide()
+    {
+        GetComponent<Image>().CrossFadeAlpha(0.0f, 0.0f, false);
+        for (int i = 0; i < activators.Count; i++)
+        {
+            activators[i].GetComponent<Image>().CrossFadeAlpha(0.0f, 0.0f, false);
+        }
+        destroyer.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.0f, false);
+    }
 }
