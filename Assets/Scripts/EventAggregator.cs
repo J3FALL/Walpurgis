@@ -16,6 +16,7 @@ public class EventAggregator : MonoBehaviour {
     public static InventoryFocusedEvent InventoryFocused = new InventoryFocusedEvent();
     public static ChangeInputModeEvent ChangeInputMode = new ChangeInputModeEvent();
     public static SymbolReachedEvent SymbolReached = new SymbolReachedEvent();
+    public static MaxAmplitudeEvent MaxAmplitude = new MaxAmplitudeEvent();
 
     void Awake()
     {
@@ -34,5 +35,6 @@ public class EventAggregator : MonoBehaviour {
         InventoryFocused = new InventoryFocusedEvent();
         ChangeInputMode = new ChangeInputModeEvent();
         SymbolReached = new SymbolReachedEvent();
+        MaxAmplitude = new MaxAmplitudeEvent();
     }
 }
